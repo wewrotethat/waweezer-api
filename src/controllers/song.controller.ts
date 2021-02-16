@@ -37,7 +37,7 @@ export class SongController {
         'application/json': {
           schema: getModelSchemaRef(Song, {
             title: 'NewSong',
-            
+
           }),
         },
       },

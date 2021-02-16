@@ -28,5 +28,13 @@
   "eslint.validate": [
     "javascript",
     "typescript"
+  ],
+  "cSpell.words": [
+    "Booter",
+    "Hasher",
+    "Unprocessable",
+    "isemail",
+    "middlewares",
+    "tokenservice"
   ]
 }
