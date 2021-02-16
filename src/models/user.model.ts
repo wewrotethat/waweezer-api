@@ -2,14 +2,28 @@ import {Entity, hasOne, model, property} from '@loopback/repository';
 import {Name} from './name.model';
 import {UserCredentials} from './user-credentials.model';
 
-@model({settings: {strict: false}})
+@model({
+  settings: {
+    indexes: {
+      uniqueEmail: {
+        keys: {
+          email: 1,
+        },
+        options: {
+          unique: true,
+        },
+      },
+    },
+  },
+})
 export class User extends Entity {
   @property({
     type: 'string',
     id: true,
     generated: true,
+    defaultFn: 'uuidv4',
   })
-  id?: string;
+  id: string;
 
   @property({
     type: Name,
@@ -32,11 +46,14 @@ export class User extends Entity {
   @property({
     type: 'string',
     required: true,
-    index: {
-      unique: true,
-    },
   })
   email: string;
+
+  @property({
+    type: 'string',
+    nullable: false,
+  })
+  role: string;
 
   @property({
     type: 'number',
@@ -60,9 +77,9 @@ export class User extends Entity {
   userCredentials: UserCredentials;
   // Define well-known properties here
 
-  // Indexer property to allow additional data
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any;
+  // // Indexer property to allow additional data
+  // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // [prop: string]: any;
 
   constructor(data?: Partial<User>) {
     super(data);
