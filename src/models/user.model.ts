@@ -21,7 +21,6 @@ export class User extends Entity {
     type: 'string',
     id: true,
     generated: true,
-    defaultFn: 'uuidv4',
   })
   id: string;
 
@@ -77,9 +76,9 @@ export class User extends Entity {
   userCredentials: UserCredentials;
   // Define well-known properties here
 
-  // // Indexer property to allow additional data
-  // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // [prop: string]: any;
+  // Indexer property to allow additional data
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [prop: string]: any;
 
   constructor(data?: Partial<User>) {
     super(data);
