@@ -1,3 +1,5 @@
+import {authenticate} from '@loopback/authentication';
+import {inject} from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -7,23 +9,24 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
+import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
 import {Playlist} from '../models';
 import {PlaylistRepository} from '../repositories';
 
 export class PlaylistController {
   constructor(
     @repository(PlaylistRepository)
-    public playlistRepository : PlaylistRepository,
+    public playlistRepository: PlaylistRepository,
   ) {}
 
   @post('/playlists')
@@ -31,34 +34,38 @@ export class PlaylistController {
     description: 'Playlist model instance',
     content: {'application/json': {schema: getModelSchemaRef(Playlist)}},
   })
+  @authenticate('jwt')
   async create(
     @requestBody({
       content: {
         'application/json': {
           schema: getModelSchemaRef(Playlist, {
             title: 'NewPlaylist',
-            
           }),
         },
       },
     })
+    @inject(SecurityBindings.USER)
+    currentUserProfile: UserProfile,
     playlist: Playlist,
   ): Promise<Playlist> {
+    const userId = currentUserProfile[securityId];
+    playlist.owner = userId;
     return this.playlistRepository.create(playlist);
   }
 
   @get('/playlists/count')
+  @authenticate('jwt')
   @response(200, {
     description: 'Playlist model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(Playlist) where?: Where<Playlist>,
-  ): Promise<Count> {
+  async count(@param.where(Playlist) where?: Where<Playlist>): Promise<Count> {
     return this.playlistRepository.count(where);
   }
 
   @get('/playlists')
+  @authenticate('jwt')
   @response(200, {
     description: 'Array of Playlist model instances',
     content: {
@@ -77,6 +84,7 @@ export class PlaylistController {
   }
 
   @patch('/playlists')
+  @authenticate('jwt')
   @response(200, {
     description: 'Playlist PATCH success count',
     content: {'application/json': {schema: CountSchema}},
@@ -104,9 +112,11 @@ export class PlaylistController {
       },
     },
   })
+  @authenticate('jwt')
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(Playlist, {exclude: 'where'}) filter?: FilterExcludingWhere<Playlist>
+    @param.filter(Playlist, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Playlist>,
   ): Promise<Playlist> {
     return this.playlistRepository.findById(id, filter);
   }
@@ -115,6 +125,7 @@ export class PlaylistController {
   @response(204, {
     description: 'Playlist PATCH success',
   })
+  @authenticate('jwt')
   async updateById(
     @param.path.string('id') id: string,
     @requestBody({
@@ -124,8 +135,12 @@ export class PlaylistController {
         },
       },
     })
+    @inject(SecurityBindings.USER)
+    currentUserProfile: UserProfile,
     playlist: Playlist,
   ): Promise<void> {
+    const userId = currentUserProfile[securityId];
+    playlist.owner = userId;
     await this.playlistRepository.updateById(id, playlist);
   }
 
@@ -133,14 +148,20 @@ export class PlaylistController {
   @response(204, {
     description: 'Playlist PUT success',
   })
+  @authenticate('jwt')
   async replaceById(
     @param.path.string('id') id: string,
     @requestBody() playlist: Playlist,
+    @inject(SecurityBindings.USER)
+    currentUserProfile: UserProfile,
   ): Promise<void> {
+    const userId = currentUserProfile[securityId];
+    playlist.owner = userId;
     await this.playlistRepository.replaceById(id, playlist);
   }
 
   @del('/playlists/{id}')
+  @authenticate('jwt')
   @response(204, {
     description: 'Playlist DELETE success',
   })

@@ -21,7 +21,6 @@ export class User extends Entity {
     type: 'string',
     id: true,
     generated: true,
-    defaultFn: 'uuidv4',
   })
   id: string;
 
