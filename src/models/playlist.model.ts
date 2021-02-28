@@ -1,4 +1,5 @@
 import {Entity, model, property} from '@loopback/repository';
+import {Song} from './song.model';
 
 @model({settings: {strict: false}})
 export class Playlist extends Entity {
@@ -16,6 +17,18 @@ export class Playlist extends Entity {
   name: string;
 
   @property({
+    type: 'string',
+    required: true,
+  })
+  description: string;
+
+  @property({
+    type: 'number',
+    required: true,
+  })
+  numberOfSaves: number;
+
+  @property({
     type: 'array',
     itemType: 'string',
     required: true,
@@ -24,10 +37,10 @@ export class Playlist extends Entity {
 
   @property({
     type: 'array',
-    itemType: 'object',
+    itemType: Song,
     required: true,
   })
-  songs: object[];
+  songs: Song[];
 
   @property({
     type: 'string',

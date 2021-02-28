@@ -1,3 +1,5 @@
+import {User, UserCredentials} from '../../models';
+
 export const UserProfileSchema = {
   type: 'object',
   required: ['id'],
@@ -7,6 +9,11 @@ export const UserProfileSchema = {
     name: {type: 'string'},
   },
 };
+
+export class UserSignUpSchema {
+  user: User;
+  userCredentials: UserCredentials;
+}
 
 const CredentialsSchema = {
   type: 'object',

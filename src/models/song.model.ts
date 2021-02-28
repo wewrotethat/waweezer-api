@@ -19,6 +19,12 @@ export class Song extends Entity {
     type: 'string',
     required: true,
   })
+  artist: string;
+  
+  @property({
+    type: 'string',
+    required: true,
+  })
   album: string;
 
   @property({
@@ -34,6 +40,11 @@ export class Song extends Entity {
   @property({
     type: 'string',
   })
+  albumArtURL?: string;
+
+  @property({
+    type: 'string',
+  })
   owner: string;
 
   @property({
@@ -41,7 +52,6 @@ export class Song extends Entity {
     required: true,
   })
   genre: string;
-
 
   constructor(data?: Partial<Song>) {
     super(data);
